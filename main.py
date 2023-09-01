@@ -8,4 +8,4 @@ async def hello(name : str):
 
 @app.get('/student/{id}')
 async def get_detail(id = int):
-    return {{id} : "Akshay"}
+    return {'Roll No' : {id}}
