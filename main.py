@@ -3,5 +3,9 @@ from fastapi import FastAPI
 app = FastAPI()
 
 @app.get('/detail')
-async def get_details(name : str):
-    return {'Hello' : {name}}
+async def hello(name : str):
+    return {'Hello':{name}}
+
+@app.get('/student/{id}')
+async def get_detail(id = int):
+    return {{id} : "Akshay"}
