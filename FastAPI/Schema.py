@@ -4,9 +4,12 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class Details(BaseModel):
+
     RollNo : int
+    Email : str
     Name : str
-    Std : str
     EngMarks : int
     MathsMarks : int
     SciMarks : int
+    class Config:
+        orm_mode = True

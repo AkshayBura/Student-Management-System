@@ -2,10 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-db_url = r'sqlite:///./student.db'
+SQLALCHEMY_DATABASE_URL = "sqlite:///./student.db"
+# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
-engine = create_engine(db_url, connect_args={"check_same_thread" : False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-localsession = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-
-base = declarative_base()
+Base = declarative_base()
