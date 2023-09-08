@@ -3,6 +3,7 @@ from database import Base
 
 class student(Base):
     __tablename__ = "student"
+    # __abstract__ = True
 
     RollNo = Column(Integer, primary_key=True, index=True)
     Email = Column(String, unique=True, index=True)
