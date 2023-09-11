@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 import uvicorn
 import Schema
 import crud, models
@@ -28,12 +28,16 @@ async def all_students(db : Session = Depends(get_db)):
     db_student = db.query(models.student).all()
     return db_student
 
-@app.post('/add-details/', response_model=Schema.Details)
-async def add_details(details : Schema.Details, db : Session = Depends(get_db)):
+@app.post('/add-details/')
+async def add_details(details : Schema.Details = Depends(), db : Session = Depends(get_db), file : UploadFile = File(...)):
     db_student = crud.get_student(db, roll_no=details.RollNo)
     if db_student:
         raise HTTPException(status_code=400, detail="Student is already registered")
-    return crud.create_student(db, student=details)
+    crud.create_student(db, student=details)
+    file_path = f'D:/Training/Student Management System/{file.filename}'
+    with open(file_path,'wb') as obj:
+        obj.write(file.file.read())
+    return {"Info": f"File '{file.filename}' is saved at '{file_path}'", 'Details' : 'Student details added successfully'}
 
 @app.put('/update-details/{Roll_No}', response_model=Schema.update_details)
 async def update_details(Roll_No: int, details : Schema.update_details, db : Session = Depends(get_db)):
