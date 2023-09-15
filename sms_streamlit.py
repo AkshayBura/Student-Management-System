@@ -1,5 +1,6 @@
 import streamlit as st
 import re
+import pandas as pd
 # from email_validator import validate_email
 import requests
 
@@ -8,7 +9,7 @@ def main():
 
     st.write('###')
 
-    preff = st.selectbox('Which operation would you like to perform ?', ('Get Details', 'Add Details', 'Update Details', 'Delete Details'))
+    preff = st.selectbox('Which operation would you like to perform ?', ('Show all Details', 'Get Details', 'Add Details', 'Update Details', 'Delete Details'))
 
     st.write('###')
 
@@ -47,10 +48,12 @@ def main():
 
             if res.status_code == 200:
                 res_data = res.json()  
+                st.write('###')
                 st.write("API Response:")
                 st.write(res_data)  
             elif res.status_code == 404:
                 resp = res.json()
+                st.write('###')
                 st.write("API Response:")
                 st.error(resp['detail'])
             else:
@@ -63,10 +66,12 @@ def main():
 
                 if res.status_code == 200:
                     resp_data = res.json()  
+                    st.write('###')
                     st.write("API Response:")
                     st.write(resp_data)  
                 elif res.status_code == 400:
                     resp = res.json()
+                    st.write('###')
                     st.write("API Response:")
                     st.error(resp['detail'])
                 else:
@@ -80,11 +85,13 @@ def main():
                 res = requests.put('http://127.0.0.1:8000/update-details', params = data)
 
                 if res.status_code == 200:
-                    resp_data = res.json()  
+                    resp_data = res.json() 
+                    st.write('###') 
                     st.write("API Response:")
                     st.write(resp_data)  
                 elif res.status_code == 404:
                     resp = res.json()
+                    st.write('###')
                     st.write("API Response:")
                     st.error(resp['detail'])
                 else:
@@ -98,12 +105,28 @@ def main():
             
             if res.status_code == 200:
                 res_data = res.json()  
+                st.write('###')
                 st.write("API Response:")
                 st.success(res_data)  
             elif res.status_code == 404:
                 resp = res.json()
+                st.write('###')
                 st.write("API Response:")
                 st.error(resp['detail'])
+            else:
+                st.error(f"Error: Unable to fetch data from the API (Status Code: {res.status_code})")
+
+        elif preff == 'Show all Details':
+            res = requests.get('http://127.0.0.1:8000/allstudents')
+            
+            if res.status_code == 200:
+                res_data = res.json()  
+                st.write('###')
+                st.write("API Response:")
+                column_order = ["RollNo", "Name", "Email", "EngMarks", "MathsMarks", "SciMarks"]
+                df = pd.DataFrame(res_data)[column_order]
+                st.dataframe(df)
+                # st.table(res_data)  
             else:
                 st.error(f"Error: Unable to fetch data from the API (Status Code: {res.status_code})")
 
