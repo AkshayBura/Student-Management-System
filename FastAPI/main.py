@@ -46,14 +46,14 @@ async def add_details(details: Schema.Details = Depends(), db : Session = Depend
 #         obj.write(file.file.read())
 #     return {"Info": f"File '{file.filename}' is saved at '{file_path}'", 'Details' : 'Student details added successfully'}
 
-@app.put('/update-details/{Roll_No}', response_model=Schema.update_details)
-async def update_details(Roll_No: int, details : Schema.update_details, db : Session = Depends(get_db)):
-    db_student = crud.get_student(db, roll_no=Roll_No)
+@app.put('/update-details', response_model=Schema.update_details)
+async def update_details(details : Schema.Details = Depends(), db : Session = Depends(get_db)):
+    db_student = crud.get_student(db, roll_no=details.RollNo)
     if db_student:
-        return crud.update_student(db, student=details, roll_no=Roll_No)
-    raise HTTPException(status_code=404, detail=f"Student with Roll No {Roll_No} doesn't exist")
+        return crud.update_student(db, student=details)
+    raise HTTPException(status_code=404, detail=f"Student with Roll No {details.RollNo} doesn't exist")
 
-@app.delete('/delete-details/{Roll_No}')
+@app.delete('/delete-details')
 async def delete_details(Roll_No : int, db : Session = Depends(get_db)):
     db_student = crud.get_student(db, roll_no=Roll_No)
     if db_student is None:

@@ -25,8 +25,8 @@ def create_student(db: Session, student: Schema.Details):
     db.refresh(db_student)
     return db_student
 
-def update_student(db: Session,roll_no: int, student: Schema.update_details):
-    db_student = db.query(models.student).filter(models.student.RollNo == roll_no)
+def update_student(db: Session, student: Schema.Details):
+    db_student = db.query(models.student).filter(models.student.RollNo == student.RollNo)
     db_student = db_student.update(student.__dict__, synchronize_session=False)
     db.commit()
     # db.refresh(db_student)
